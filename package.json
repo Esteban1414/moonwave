@@ -1,0 +1,65 @@
+{
+  "name": "moonwave",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "/",
+  "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.2",
+    "@mui/x-data-grid": "^5.17.24",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "apexcharts": "^4.5.0",
+    "dotenv": "^16.5.0",
+    "firebase": "^11.6.0",
+    "firebase-admin": "^13.2.0",
+    "framer-motion": "^7.6.19",
+    "material-react-table": "^1.5.4",
+    "next": "^15.3.0",
+    "next-auth": "^4.24.11",
+    "react": "^18.3.1",
+    "react-apexcharts": "^1.7.0",
+    "react-circular-progressbar": "^2.1.0",
+    "react-dom": "^18.3.1",
+    "react-icons": "^4.6.0",
+    "react-mui-scheduler": "^2.0.4",
+    "react-paginate": "^8.1.4",
+    "react-router-dom": "^6.4.2",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^9.1.1",
+    "resend": "^4.4.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "dev": "react-scripts start & vercel dev"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@vercel/node": "^5.1.14",
+    "@vercel/static-build": "^2.7.6"
+  }
+}
