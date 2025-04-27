@@ -10,6 +10,7 @@ import Dashboard from "./admin/pages/dashboard";
 import Users from "./admin/pages/users";
 
 import Home from "./user/index";
+import NotFound from "./user/404";
 
 const sideBarWidth = 250;
 
@@ -50,20 +51,19 @@ function App() {
 
   return (
     <Routes>
+
       {/* Rutas para usuarios */}
       <Route path="/" element={<Home />} />
 
-      {/* Rutas para admin*/}
-      <Route path="/admin/" element={
-        <AdminLayout>
-          <Dashboard />
-        </AdminLayout>
-      } />
-      <Route path="/admin/usuarios/" element={
-        <AdminLayout>
-          <Users />
-        </AdminLayout>
-      } />
+      {/* Ruta admin dashboard*/}
+      <Route path="/admin/" element={<AdminLayout><Dashboard /></AdminLayout>} />
+
+      {/* Ruta admin users*/}
+      <Route path="/admin/usuarios/" element={<AdminLayout><Users /></AdminLayout>} />
+
+      {/* Ruta 404*/}
+      <Route path="*" element={<NotFound />} />
+
     </Routes>
   );
 }
