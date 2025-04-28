@@ -60,13 +60,11 @@ const Users = () => {
     { field: "email", headerName: "Correo Electrónico", flex: 1 },
     { field: "username", headerName: "Nombre de Usuario", flex: 1 },
     { field: "red", headerName: "Red Social", flex: 0.7 },
-    // { field: "createdAt", headerName: "Fecha de Registro", flex: 1 },
     {
       field: 'createdAt',
       headerName: 'Fecha de Registro',
       flex: 1,
       valueFormatter: (params) => {
-        // Si es Timestamp de Firebase
         const date = params.value?.toDate
           ? params.value.toDate()
           : new Date(params.value);
@@ -361,7 +359,7 @@ const Users = () => {
 
   return (
     <Box sx={{ pt: "80px", pb: "20px", px: "20px" }}>
-
+      {/* TOAST */}
       <div>
         <ToastContainer
           position="top-right"
@@ -376,23 +374,74 @@ const Users = () => {
         />
       </div>
 
-      {/* BOTON AZUL AÑADIR USUARIO */}
-      <Button
-        variant="contained"
-        onClick={() => setOpenAddDialog(true)}
-        sx={{ mb: 2, backgroundColor: '#5CB3FF', color: "#000", '&:hover': { backgroundColor: '#4CA1E0', } }}>
-        Añadir usuario
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        {/* Botón añadir usuario */}
+        <Button
+          variant="contained"
+          onClick={() => setOpenAddDialog(true)}
+          sx={{
+            backgroundColor: '#5CB3FF',
+            color: "#000",
+            '&:hover': { backgroundColor: '#4CA1E0' },
+          }}
+        >
+          Añadir usuario
+        </Button>
+      </Box>
+
       {/* DATA TABLE */}
       <Box sx={{ height: "75vh" }}>
         <DataGrid
           rows={users}
           columns={columns}
           loading={loading}
-          slots={{ toolbar: GridToolbar }}
+          components={{ Toolbar: GridToolbar }}
+          disableColumnMenu   
           localeText={{
             noRowsLabel: "No hay registros",
-            loadingOverlayLabel: "Cargando usuarios..."
+            loadingOverlayLabel: "Cargando usuarios...",
+            toolbarDensity: "Densidad",
+            toolbarDensityLabel: "Densidad",
+            toolbarDensityCompact: "Compacta",
+            toolbarDensityStandard: "Estándar",
+            toolbarDensityComfortable: "Cómoda",
+            toolbarColumns: "Columnas",
+            toolbarColumnsLabel: "Seleccionar columnas",
+            toolbarFilters: "Filtros",
+            toolbarFiltersLabel: "Mostrar filtros",
+            toolbarExport: "Exportar",
+            toolbarExportLabel: "Exportar",
+
+            filterPanelColumns: "Columna",
+            filterPanelOperators: "Operador",
+            filterPanelInputLabel: "Valor",
+            filterPanelInputPlaceholder: "Filtrar valor",
+            columnsPanelTextFieldLabel: "Buscar columna",
+            columnsPanelTextFieldPlaceholder: "Título de la columna",
+            toolbarExportCSV: "Descargar como CSV",
+            toolbarExportPrint: "Imprimir",
+
+            filterOperatorContains: "Contiene",
+            filterOperatorEquals: "Igual a",
+            filterOperatorStartsWith: "Empieza con",
+            filterOperatorEndsWith: "Termina con",
+            filterOperatorIs: "Es",
+            filterOperatorNot: "No es",
+            filterOperatorAfter: "Después de",
+            filterOperatorOnOrAfter: "En o después de",
+            filterOperatorBefore: "Antes de",
+            filterOperatorOnOrBefore: "En o antes de",
+            filterOperatorIsEmpty: "Está vacío",
+            filterOperatorIsNotEmpty: "No está vacío",
+            filterOperatorIsAnyOf: "Es alguno de",
+
+            MuiTablePagination: {
+              labelRowsPerPage: 'Filas por página:',
+              labelDisplayedRows: ({ from, to, count }) => 
+                `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`,
+            },
+            footerRowSelected: (count) => 
+              count === 1 ? '1 fila seleccionada' : `${count} filas seleccionadas`,
           }}
           sx={{
             borderRadius: "12px",
@@ -407,15 +456,20 @@ const Users = () => {
             "& .MuiTablePagination-root": {
               color: "#000",
             },
+            '@media print': {
+              '.MuiDataGrid-toolbarContainer': {
+                display: 'none',
+              },
+            },
           }}
         />
       </Box>
 
-      {/* DIALOG AÑADIR USUARIO */}
+
+      {/* Añadir Usuario */}
       <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>
         <DialogTitle>Añadir nuevo usuario</DialogTitle>
         <DialogContent>
-
           <TextField
             label="Nombre de usuario"
             fullWidth
@@ -423,7 +477,6 @@ const Users = () => {
             onChange={(e) => setNewUsername(e.target.value)}
             margin="normal"
           />
-
           <TextField
             label="Correo electrónico"
             fullWidth
@@ -431,16 +484,10 @@ const Users = () => {
             onChange={(e) => setNewEmail(e.target.value)}
             margin="normal"
           />
-
           <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" gutterBottom>
-              O registra con:
-            </Typography>
-
-            {/* DIALOG REDES SOCIALES */}
+            <Typography variant="body2" gutterBottom>O registra con:</Typography>
             <Box display="flex" gap={2} justifyContent="center" mt={1}>
-
-              {/* GOOGLE */}
+              {/* Google */}
               <Button
                 variant="outlined"
                 startIcon={<img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" width="20" />}
@@ -455,7 +502,7 @@ const Users = () => {
                 {isAddingGoogle ? 'Cargando...' : 'Google'}
               </Button>
 
-              {/* FACEBOOK */}
+              {/* Facebook */}
               <Button
                 variant="outlined"
                 startIcon={<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" width="20" />}
@@ -469,13 +516,11 @@ const Users = () => {
               >
                 {isAddingFacebook ? 'Cargando...' : 'Facebook'}
               </Button>
-
             </Box>
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAddDialog(false)}>Cancelar</Button>
-
           <Button
             onClick={async () => {
               setIsAdding(true);
@@ -488,11 +533,10 @@ const Users = () => {
           >
             {isAdding ? 'Añadiendo...' : 'Añadir'}
           </Button>
-
         </DialogActions>
       </Dialog>
 
-      {/* DIALOG EDITAR USUARIO*/}
+      {/* Editar Usuario */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Editar usuario</DialogTitle>
         <DialogContent>
@@ -511,7 +555,7 @@ const Users = () => {
               setIsEditing(true);
               await updateUser();
               setIsEditing(false);
-              setOpenDialog(false); // solo si fue exitoso dentro de updateUser()
+              setOpenDialog(false);
             }}
             variant="contained"
             color="primary"
@@ -519,24 +563,17 @@ const Users = () => {
           >
             {isEditing ? 'Guardando...' : 'Guardar'}
           </Button>
-
         </DialogActions>
       </Dialog>
 
-      {/* DIALOG BORRAR USUARIO */}
-      <Dialog
-        open={openDeleteDialog}
-        onClose={() => setOpenDeleteDialog(false)}
-      >
+      {/* Borrar Usuario */}
+      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
         <DialogTitle>Confirmar eliminación</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            ¿Estás seguro que deseas eliminar este usuario?
-          </DialogContentText>
+          <DialogContentText>¿Estás seguro que deseas eliminar este usuario?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDeleteDialog(false)}>Cancelar</Button>
-
           <Button
             color="error"
             disabled={isDeleting}
@@ -551,12 +588,10 @@ const Users = () => {
           >
             {isDeleting ? 'Eliminando...' : 'Eliminar'}
           </Button>
-
         </DialogActions>
       </Dialog>
-
-
     </Box>
+
   );
 };
 

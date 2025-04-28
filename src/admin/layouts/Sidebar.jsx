@@ -8,7 +8,7 @@ const Sidebar = ({ window, sideBarWidth, mobileOpen, handleDrawerToggle }) => {
   const drawer = (
     <div>
       <Toolbar>
-        <img src="/mwv.png" alt="Logo" width="40" />
+        <img src="https://i.imgfly.me/sYuqdf.png" alt="Logo" width="40" />
         <Typography variant="h6" sx={{ fontWeight: "bold", ml: 2 }}>
           Moonwave
         </Typography>
