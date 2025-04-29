@@ -216,8 +216,6 @@ const Users = () => {
     }
   };
 
-
-
   {/* DIALOG ACTUALIZAR USUARIO SOLO EL EMAIL*/ }
   const updateDialog = (user) => {
     setSelectedUser(user);
@@ -229,7 +227,7 @@ const Users = () => {
   const updateUser = async () => {
     try {
       if (!selectedUser || !emailInput.trim()) return;
-
+  
       const isDuplicate = users.some(
         (u) => u.email === emailInput.trim() && u.id !== selectedUser.id
       );
@@ -237,24 +235,38 @@ const Users = () => {
         toast.error("Este correo ya está registrado.");
         return;
       }
-
-      const userRef = doc(db, "users", selectedUser.id);
-      await updateDoc(userRef, { email: emailInput.trim() });
-
+  
+      const response = await fetch('/api/users', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: selectedUser.id,
+          email: emailInput.trim(),
+        }),
+      });
+    
+      if (!response.ok) {
+        throw new Error('Error al actualizar usuario');
+      }
+  
       setUsers((prev) =>
         prev.map((u) =>
           u.id === selectedUser.id ? { ...u, email: emailInput.trim() } : u
         )
       );
-
+  
       setOpenDialog(false);
       setSelectedUser(null);
       setEmailInput("");
+  
       toast.success("Usuario actualizado correctamente");
     } catch (error) {
-      toast.error("Error al actualizar usuario");
+      toast.error('Error al actualizar usuario');
     }
   };
+  
 
   {/* MÉTODO PARA BORRAR USUARIO */ }
   const deleteUser = async (uid) => {
@@ -265,8 +277,6 @@ const Users = () => {
           'Content-Type': 'application/json'
         }
       });
-
-      const data = await response.json();
 
       if (!response.ok) {
         throw new Error('Error al eliminar usuario');
