@@ -55,8 +55,12 @@ const Users = () => {
   const [isAddingGoogle, setIsAddingGoogle] = useState(false);
   const [isAddingFacebook, setIsAddingFacebook] = useState(false);
 
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [selectedUserForDiscount, setSelectedUserForDiscount] = useState(null);
+  const [selectedDiscountStatus, setSelectedDiscountStatus] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
     { field: "email", headerName: "Correo Electrónico", flex: 1 },
     { field: "username", headerName: "Nombre de Usuario", flex: 1 },
     { field: "red", headerName: "Red Social", flex: 0.7 },
@@ -76,7 +80,26 @@ const Users = () => {
         }); // Formato: 21/04/2025
       }
     },
-
+    {
+      field: "discountStatus",
+      headerName: "Descuento",
+      flex: 0.7,
+      renderCell: (params) => (
+        <Button
+          variant="outlined"
+          color={params.row.discountStatus ? "success" : "warning"}
+          size="small"
+          onClick={() => {
+            setSelectedUserForDiscount(params.row.id);
+            setSelectedDiscountStatus(!params.row.discountStatus);
+            setOpenConfirmDialog(true);
+          }}
+        >
+          {params.row.discountStatus ? "✔️" : "❌"}
+          {/* {params.row.discountStatus ? "✔️ Recibido" : "❌ No recibido"} */}
+        </Button>
+      )
+    },
     {
       field: "actions",
       headerName: "Acciones",
@@ -246,7 +269,7 @@ const Users = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al eliminar usuario');
+        throw new Error('Error al eliminar usuario');
       }
 
       setUsers((prev) => prev.filter((u) => u.id !== uid));
@@ -260,8 +283,37 @@ const Users = () => {
     }
   };
 
-  {/* MÉTODO PARA MANEJAR ERRORES */ }
+  {/* MÉTODO PARA MANEJAR DESCUENTO */ }
+  const updateDiscountStatus = async (uid, discountStatus) => {
+    try {
+      const response = await fetch('/api/discount', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ uid, discountStatus })
+      });
+    
+      if (!response.ok) {
+        throw new Error('Error al actualizar descuento');
+      }
+  
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === uid ? { ...u, discountStatus: discountStatus } : u
+        )
+      );
+  
+      toast.success('Estado del descuento actualizado correctamente');
+      return { success: true };
+    } catch (err) {
+      toast.error('Error al actualizar el estado del descuento');
+      return { success: false, error: err.message };
+    }
+  };
+  
 
+  {/* MÉTODO PARA MANEJAR ERRORES */ }
   const getError = (error, provider = 'el proveedor') => {
     const code = error.code || error?.error?.code;
     const message = error.message || error?.error?.message;
@@ -396,7 +448,7 @@ const Users = () => {
           columns={columns}
           loading={loading}
           components={{ Toolbar: GridToolbar }}
-          disableColumnMenu   
+          disableColumnMenu
           localeText={{
             noRowsLabel: "No hay registros",
             loadingOverlayLabel: "Cargando usuarios...",
@@ -437,10 +489,10 @@ const Users = () => {
 
             MuiTablePagination: {
               labelRowsPerPage: 'Filas por página:',
-              labelDisplayedRows: ({ from, to, count }) => 
+              labelDisplayedRows: ({ from, to, count }) =>
                 `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`,
             },
-            footerRowSelected: (count) => 
+            footerRowSelected: (count) =>
               count === 1 ? '1 fila seleccionada' : `${count} filas seleccionadas`,
           }}
           sx={{
@@ -590,6 +642,37 @@ const Users = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Confirmar cambio de descuento */}
+      <Dialog open={openConfirmDialog} onClose={() => setOpenConfirmDialog(false)}>
+        <DialogTitle>Confirmar cambio de descuento</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            ¿Estás seguro que deseas {selectedDiscountStatus ? "marcar como recibido" : "marcar como no recibido"} el descuento?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConfirmDialog(false)}>Cancelar</Button>
+          <Button
+            color="primary"
+            disabled={isUpdating}
+            onClick={async () => {
+              if (!selectedUserForDiscount) return;
+
+              setIsUpdating(true);
+              const result = await updateDiscountStatus(selectedUserForDiscount, selectedDiscountStatus);
+              setIsUpdating(false);
+
+              if (result.success) {
+                setOpenConfirmDialog(false);
+              }
+            }}
+          >
+            {isUpdating ? 'Actualizando...' : 'Confirmar'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
 
   );

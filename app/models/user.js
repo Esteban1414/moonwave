@@ -12,6 +12,7 @@ export const createUser = async ({ email, username, red }) => {
     username,
     red,
     createdAt,
+    discountStatus: false,
   });
 
   // Mandar correo de bienvenida
@@ -62,11 +63,24 @@ export const createUserWithProvider = async ({ id, email, username, red }) => {
     username,
     red,
     createdAt,
+    discountStatus: false,
   });
 
   await sendEmail(email, username);
 
   return { id, email, username, red, createdAt, exists: false };
+};
+
+export const updateDiscountStatus = async (uid, discountStatus) => {
+  const userRef = db.collection("users").doc(uid);
+  const docSnap = await userRef.get();
+
+  if (!docSnap.exists) {
+    throw new Error("Usuario no encontrado");
+  }
+
+  await userRef.update({ discountStatus });
+  return { id: uid, discountStatus };
 };
 
 const sendEmail = async (email, username) => {
@@ -126,8 +140,6 @@ const sendEmail = async (email, username) => {
       html: htmlContent,
     });
 
-    console.log("Email enviado correctamente:", data);
   } catch (error) {
-    console.error("Error al enviar email:", error);
   }
 };

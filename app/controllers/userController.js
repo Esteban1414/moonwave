@@ -3,10 +3,9 @@ import { deleteUser as deleteUserModel } from "../models/user";
 import { createUser as createUserModel } from "../models/user.js";
 import { updateUser as updateUserModel } from "../models/user.js";
 import { createUserWithProvider as createUserWithProviderModel } from "../models/user.js";
+import { updateDiscountStatus as updateDiscountStatusModel } from "../models/user.js";
 
-{
-  /* MÉTODO PARA AÑADIR USUARIO */
-}
+{/* MÉTODO PARA AÑADIR USUARIO */}
 export const createUser = async (req, res) => {
   try {
     const { email, username, red } = req.body;
@@ -25,9 +24,7 @@ export const createUser = async (req, res) => {
   }
 };
 
-{
-  /* MÉTODO PARA ACTUALIZAR USUARIO*/
-}
+{/* MÉTODO PARA ACTUALIZAR USUARIO*/}
 export const updateUser = async (req, res) => {
   try {
     const { uid, email } = req.body;
@@ -45,9 +42,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
-{
-  /* MÉTODO PARA BORRAR USUARIO*/
-}
+{/* MÉTODO PARA BORRAR USUARIO*/}
 export const deleteUser = async (req, res) => {
   try {
     const { uid } = req.query;
@@ -63,9 +58,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-{
-  /* MÉTODO PARA AÑADIR USUARIO POR PROVEEDOR*/
-}
+{/* MÉTODO PARA AÑADIR USUARIO POR PROVEEDOR*/}
 export const createUserWithProvider = async (req, res) => {
   try {
     const { id, email, username, red } = req.body;
@@ -86,3 +79,18 @@ export const createUserWithProvider = async (req, res) => {
   }
 };
 
+{/* MÉTODO PARA ACTUALIZAR EL DISCOUNT STATUS */}
+export const updateDiscountStatus = async (req, res) => {
+  try {
+    const { uid, discountStatus } = req.body;
+
+    if (typeof discountStatus !== "boolean" || !uid) {
+      return res.status(400).json({ error: "Faltan campos obligatorios (uid, discountStatus boolean)" });
+    }
+
+    const result = await updateDiscountStatusModel(uid, discountStatus);
+    return res.status(200).json({ success: true, user: result });
+  } catch (err) {
+    return res.status(500).json({ error: "Error al actualizar discountStatus" });
+  }
+};
