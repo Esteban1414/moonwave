@@ -11,6 +11,8 @@ import Users from "./admin/pages/users";
 
 import Home from "./user/index";
 import NotFound from "./user/404";
+import Login from "./user/Login";
+import Auth from "./user/Auth";
 
 const sideBarWidth = 250;
 
@@ -47,6 +49,32 @@ function AdminLayout({ children }) {
   );
 }
 
+function FooterLayout({ children }) {
+  return (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#0A0E17",
+      }}
+    >
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          px: 2,
+        }}
+      >
+        {children}
+      </Box>
+      <Footer />
+    </Box>
+  );
+}
+
 function App() {
 
   return (
@@ -55,12 +83,15 @@ function App() {
       {/* Rutas para usuarios */}
       <Route path="/" element={<Home />} />
 
+      {/* Rutas de validación de sesión *SOLAMENTE SERÍA PARA EL ADMIN* */}
+      <Route path="/login" element={<FooterLayout><Login /></FooterLayout>} />
+
       {/* Ruta admin dashboard*/}
-      <Route path="/admin/" element={<AdminLayout><Dashboard /></AdminLayout>} />
+      <Route path="/admin/" element={<Auth><AdminLayout><Dashboard /></AdminLayout></Auth>}/>
 
       {/* Ruta admin users*/}
-      <Route path="/admin/usuarios/" element={<AdminLayout><Users /></AdminLayout>} />
-
+      <Route path="/admin/usuarios/" element={<Auth><AdminLayout><Users /></AdminLayout></Auth>}/>
+      
       {/* Ruta 404*/}
       <Route path="*" element={<NotFound />} />
 
